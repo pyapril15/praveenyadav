@@ -27,14 +27,13 @@ The `@/*` TypeScript alias points to `src/*`.
 
 Keep these long-lived branches:
 
-- `development`: integration branch for completed features and fixes.
-- `main`: release candidate.
-- `production`: production release branch used by Vercel.
+- `development`: integration branch where features and fixes are tested.
+- `main`: protected production branch used by Vercel.
 
-Use this promotion flow:
+Use this flow:
 
 ```text
-feature/fix/Dependabot branch -> development -> main -> production
+feature/fix/Dependabot branch -> development -> main
 ```
 
 For every pull request, **base is the destination** and **compare is the source**:
@@ -42,10 +41,9 @@ For every pull request, **base is the destination** and **compare is the source*
 | Work | Compare (source) | Base (destination) |
 |---|---|---|
 | Feature, fix, or dependency update | Work branch | `development` |
-| Promote tested changes | `development` | `main` |
-| Release to production | `main` | `production` |
+| Promote tested changes to production | `development` | `main` |
 
-Do not push work directly to protected branches. Require the `Lint and build` status check in the rulesets for all three long-lived branches. Use squash merges for short-lived work branches into `development`; use merge commits for promotions between long-lived branches when available, to preserve their history.
+Do not push directly to `main` or open feature PRs directly into it. The CI workflow rejects PRs into `main` unless their source is `development`. Protect both long-lived branches with required PRs and the `Lint and build` status check; block force pushes and deletion, and do not allow bypasses for `main`. Use squash merges for short-lived work branches into `development`, and merge commits for `development` into `main` to keep the long-lived branches aligned.
 
 Dependabot creates its own dependency-update branches and PRs targeting `development`. Review each update and merge it only when its CI check passes. Keep TypeScript on a version supported by `typescript-eslint`; the current project uses TypeScript 5.9.3.
 
@@ -99,10 +97,10 @@ npm run lint
 npm run build
 ```
 
-The `CI` workflow in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs `npm ci`, `npm run lint`, and `npm run build` on PRs and pushes to `development`, `main`, and `production`.
+The `CI` workflow in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs `npm ci`, `npm run lint`, and `npm run build` on PRs and pushes to `development` and `main`. A PR to `main` must come from `development`.
 
 ## Vercel deployment
 
-Connect this GitHub repository to a Vercel project. In Vercel project settings, set **Production Branch** to `production` and Node.js to 24.x. Vercel creates preview deployments from other branches and production deployments from the configured production branch.
+Connect this GitHub repository to a Vercel project. In Vercel project settings, set **Production Branch** to `main` and Node.js to 24.x. Vercel creates preview deployments from `development` and other branches; merging `development` into `main` triggers the production deployment.
 
 Store environment variables in Vercel project settings and assign the appropriate environment scope. Do not commit secrets, `.env` files, or Vercel deployment tokens. The repository's [`vercel.json`](vercel.json) configures response security headers; it does not connect the project to Vercel.

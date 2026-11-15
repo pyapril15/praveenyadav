@@ -31,8 +31,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## CI and Vercel deployment
 
-GitHub Actions runs lint and production-build checks for pull requests and pushes to `development`, `main`, and `production`. After a successful run, select the **Lint and build** check in the branch ruleset.
+GitHub Actions runs lint and production-build checks for pull requests and pushes to `development` and `main`. Pull requests into `main` must come from `development`; select the **Lint and build** check as a required status check in the branch ruleset.
 
-To enable deployments, connect this GitHub repository to a Vercel project and set its **Production Branch** to `production`. Vercel's Git integration creates preview deployments for pull requests and non-production branches, and production deployments from `production`. Set the Vercel project to use Node.js 24.x to match CI.
+To enable deployments, connect this GitHub repository to a Vercel project and set its **Production Branch** to `main`. Vercel's Git integration creates preview deployments for pull requests and non-production branches, and production deployments from `main`. Set the Vercel project to use Node.js 24.x to match CI.
 
 Store environment variables in Vercel's project settings and scope them to the appropriate environments. Do not commit secrets or add Vercel deployment tokens to the CI workflow.
