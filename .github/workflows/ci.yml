@@ -5,12 +5,10 @@ on:
     branches:
       - development
       - main
-      - production
   push:
     branches:
       - development
       - main
-      - production
   workflow_dispatch:
 
 permissions:
@@ -28,6 +26,16 @@ jobs:
     env:
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
+      - name: Require development as source for main PRs
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
+        env:
+          PR_HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ "$PR_HEAD_REF" != "development" ]; then
+            echo "::error::Pull requests into main must originate from development."
+            exit 1
+          fi
+
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
