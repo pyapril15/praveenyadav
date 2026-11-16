@@ -1,0 +1,57 @@
+@layer base {
+  html {
+    min-block-size: 100%;
+    background-color: var(--surface-page);
+  }
+
+  body {
+    min-block-size: 100%;
+    margin: 0;
+    background-color: var(--surface-page);
+    color: var(--text-primary);
+    font-family: var(--font-family-sans);
+    font-size: var(--type-base);
+    font-size-adjust: from-font;
+    line-height: var(--line-height-body);
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-family-display);
+    line-height: var(--line-height-heading);
+    letter-spacing: var(--letter-spacing-tight);
+    text-wrap: balance;
+  }
+
+  :where(p) {
+    text-wrap: pretty;
+  }
+
+  :where(:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  .theme-choice-input:focus-visible + .theme-choice-label {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  .theme-aware-logo {
+    filter: none;
+  }
+
+  :root[data-theme="dark"] .theme-aware-logo {
+    filter: invert(1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .theme-aware-logo {
+      filter: invert(1);
+    }
+  }
+
+  ::selection {
+    color: var(--text-primary);
+    background-color: var(--brand-primary-subtle);
+  }
+}
